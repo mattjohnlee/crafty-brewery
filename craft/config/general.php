@@ -8,5 +8,6 @@
  */
 
 return array(
-	'cpTrigger' => 'fermented'
+	'cpTrigger' => 'fermented',
+	'devMode' => 'true'
 );

@@ -30,7 +30,9 @@
 		
 		{% for block in entry.recipeContent %}
 
-			{% if block.type == 'recipeImage' %}
+			{% switch block.type %}
+
+			{% case 'recipeImage' %}
 			{% set image = block.recipeImage.first() %}
 	        <div class="photo-inset full"> <!-- full, left, right -->
 	            <img src="{{ image.url }}"
@@ -40,13 +42,11 @@
 	                <small>{{ block.imageCaption }}</small>
 	            </p>
 	        </div>
-			{% endif %}
 
-			{% if block.type == 'recipeCopy' %}
+			{% case 'recipeCopy' %}
 			{{ block.bodyContent }}
-			{% endif %}
 
-			{% if block.type == 'recipeIngredients' %}
+			{% case 'recipeIngredients' %}
 	        <table width="100%">
 	            <tr>
 	                <th width="20%">Amount</th>
@@ -59,9 +59,8 @@
 	            </tr>
 	            {% endfor %}
 	        </table>
-			{% endif %}
 
-			{% if block.type == 'recipeSteps' %}
+			{% case 'recipeSteps' %}
 	        <div class="steps">
 	            <h3>{{ block.stepsTitle }}</h3>
 	            <ol>
@@ -70,14 +69,12 @@
 	                {% endfor %}
 	            </ol>
 	        </div>
-			{% endif %}
 
-			{% if block.type == 'recipeTip' %}
+			{% case 'recipeTip' %}
 	        <div class="panel tip">
 	            <p>{{ block.tipContent }}</p>
 	        </div>
-			
-			{% endif %}
+			{% endswitch %}
 
 		{% endfor %}
 

@@ -592,7 +592,7 @@ $.extend(Craft,
 			// If they're actual objects (not arrays), compare the keys
 			if (!(obj1 instanceof Array))
 			{
-				if (!Craft.compare(Craft.getObjectKeys(obj1), Craft.getObjectKeys(obj2)))
+				if (!Craft.compare(Craft.getObjectKeys(obj1).sort(), Craft.getObjectKeys(obj2).sort()))
 				{
 					return false;
 				}
@@ -628,6 +628,10 @@ $.extend(Craft,
 
 		for (var key in obj)
 		{
+			if (!obj.hasOwnProperty(key)) {
+				continue;
+			}
+
 			keys.push(key);
 		}
 
@@ -3337,7 +3341,11 @@ Craft.BaseElementIndexView = Garnish.Base.extend(
 			}, this);
 
 			this.addListener(this.$elementContainer, 'dblclick', this._handleElementEditing);
-			this.addListener(this.$elementContainer, 'taphold', this._handleElementEditing);
+
+			if($.isTouchCapable())
+			{
+				this.addListener(this.$elementContainer, 'taphold', this._handleElementEditing);
+			}
 		}
 
 		// Give sub-classes a chance to do post-initialization stuff here
@@ -3893,7 +3901,11 @@ Craft.BaseElementSelectInput = Garnish.Base.extend(
 			}, this);
 
 			this.addListener($elements, 'dblclick', this._handleShowElementEditor);
-			this.addListener($elements, 'taphold', this._handleShowElementEditor);
+
+			if($.isTouchCapable())
+			{
+				this.addListener($elements, 'taphold', this._handleShowElementEditor);
+			}
 		}
 
 		$elements.find('.delete').on('click', $.proxy(function(ev)
@@ -3997,6 +4009,7 @@ Craft.BaseElementSelectInput = Garnish.Base.extend(
 			sources:            this.settings.sources,
 			criteria:           this.settings.criteria,
 			multiSelect:        (this.settings.limit != 1),
+			showLocaleMenu:     this.settings.showLocaleMenu,
 			disabledElementIds: this.getDisabledElementIds(),
 			onSelect:           $.proxy(this, 'onModalSelect')
 		}, this.settings.modalSettings);
@@ -4149,6 +4162,7 @@ Craft.BaseElementSelectInput = Garnish.Base.extend(
 		sourceElementId: null,
 		viewMode: 'list',
 		limit: null,
+		showLocaleMenu: false,
 		modalStorageKey: null,
 		modalSettings: {},
 		onSelectElements: $.noop,
@@ -4362,6 +4376,10 @@ Craft.BaseElementSelectorModal = Garnish.Modal.extend(
 			sources:     this.settings.sources
 		};
 
+		if (this.settings.showLocaleMenu !== null && this.settings.showLocaleMenu != 'auto') {
+			data.showLocaleMenu = this.settings.showLocaleMenu ? '1' : '0';
+		}
+
 		Craft.postActionRequest('elements/getModalBody', data, $.proxy(function(response, textStatus)
 		{
 			if (textStatus == 'success')
@@ -4386,7 +4404,6 @@ Craft.BaseElementSelectorModal = Garnish.Modal.extend(
 				});
 
 				// Double-clicking or double-tapping should select the elements
-				this.addListener(this.elementIndex.$elements, 'dblclick', 'selectElements');
 				this.addListener(this.elementIndex.$elements, 'doubletap', 'selectElements');
 			}
 
@@ -4400,6 +4417,7 @@ Craft.BaseElementSelectorModal = Garnish.Modal.extend(
 		sources: null,
 		criteria: null,
 		multiSelect: false,
+		showLocaleMenu: null,
 		disabledElementIds: [],
 		disableElementsOnSelect: false,
 		hideOnSelect: true,

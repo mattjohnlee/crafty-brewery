@@ -9,7 +9,7 @@
 <div class="full-bleed-header" style="background-size: 100%; height: 300px; background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(https://thepintpundits.files.wordpress.com/2013/02/dark-horse-tres-blueberry-stout-1.jpg); background-repeat: no-repeat, repeat;">
     <div class="page-title text-center">
         <h2 class="logo"><span class="scripty">{{ entry.title }}</h2>
-        <p class="tagline reverse">(style)</p>
+        <p class="tagline reverse">{% for style in entry.style %}{{ style.title }}{% endfor %}</p>
     </div>
 </div>
 <div class="row">
